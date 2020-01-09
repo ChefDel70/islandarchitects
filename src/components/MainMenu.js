@@ -1,24 +1,25 @@
 import React from 'react';
 import {graphql, StaticQuery, Link} from 'gatsby';
 import styled from 'styled-components';
-import SiteInfo from './SiteInfo';
+import SiteLogo from './SiteLogo';
+import SiteIcons from './SiteIcons';
 
 const MainMenuWrapper = styled.div`
   display: flex;
-  background-color: rgb(3, 27, 77);
+  background-color: white;
 `
 
 const MenuItem = styled(Link)`
-  color: white;
+  color: black;
   display: block;
   padding: 8px 16px;
 `
 
 const MainMenuInner = styled.div`
-  max-width: 960px;
+  max-width: 900px;
   margin: 0 auto;
   display: flex;
-  width: 960px;
+  width: 900px;
   height: 100%;
 `
 
@@ -47,14 +48,15 @@ const MainMenu = () => (
 
       render={props => (
         <MainMenuWrapper>
-          <MainMenuInner>
-            <SiteInfo />
-            {props.allWordpressWpApiMenusMenusItems.edges[0].node.items.map(item => (
-              <MenuItem to={`/${item.object_slug}`} key={item.title}>
-                {item.title}
-              </MenuItem>
-            ))}
-          </MainMenuInner>
+          <SiteLogo />
+            <MainMenuInner>
+              {props.allWordpressWpApiMenusMenusItems.edges[0].node.items.map(item => (
+                <MenuItem to={`/${item.object_slug}`} key={item.title}>
+                  {item.title}
+                </MenuItem>
+              ))}
+            </MainMenuInner>
+            <SiteIcons />
         </MainMenuWrapper>
       )}
     />
