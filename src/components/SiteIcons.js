@@ -42,7 +42,7 @@ const SiteIcons = () => (
       {props.allWordpressWpApiMenusMenusItems.edges[0].node.items.map(item => (
         <SiteIconItem>
           <a href={`${item.url}`} target="_blank" rel="noopener noreferrer">
-          <img src={`${icons_prefix}${item.title}.png`} alt="" />
+          <img src={`${icons_prefix}${item.title}.png`} alt="icons" />
           </a>
         </SiteIconItem>
       ))}

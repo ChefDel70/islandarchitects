@@ -1,19 +1,21 @@
 import React from 'react';
 import {graphql, StaticQuery} from 'gatsby';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
 const HeroImage = () => (
-  <StaticQuery
+    <StaticQuery
 
     query={graphql`
         {
-          allWordpressPage {
+          allWordpressPage(filter: {title: {eq: "Home"}}) {
             edges {
               node {
                 acf {
                   hero_image {
                     source_url
                   }
+                  hero_title
+                  hero_paragraph
                 }
               }
             }
@@ -21,12 +23,25 @@ const HeroImage = () => (
         }
       `}
 
-    render={props => (
-      <div>
-        <img src={props.allWordpressPage.edges[3].node.acf.hero_image.source_url} alt="Hero Image"/>
-      </div>
+    render = { props => {
+      const homePage = props.allWordpressPage.edges[0].node.acf
 
-    )}
+      const { hero_image, hero_title, hero_paragraph } = homePage
+
+      return (
+        <div>
+          <div>
+            <img src={ hero_image.source_url } alt="Hero"/>
+          </div>
+          <div>
+            { hero_title }
+          </div>
+          <div>
+            { hero_paragraph }
+          </div>
+        </div>
+      )
+    }}
   />
 );
 

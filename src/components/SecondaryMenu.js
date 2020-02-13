@@ -1,6 +1,7 @@
 import React from 'react';
 import {graphql, StaticQuery, Link} from 'gatsby';
 import styled from 'styled-components';
+import SiteLogo from './SiteLogo';
 import SiteIcons from './SiteIcons';
 
 const MainMenuWrapper = styled.div`
@@ -22,7 +23,7 @@ const MainMenuInner = styled.div`
   height: 100%;
 `
 
-const MainMenu = () => (
+const SecondaryMenu = () => (
   <StaticQuery
 
     query={graphql`
@@ -47,6 +48,7 @@ const MainMenu = () => (
 
       render={props => (
         <MainMenuWrapper>
+          <SiteLogo />
             <MainMenuInner>
               {props.allWordpressWpApiMenusMenusItems.edges[0].node.items.map(item => (
                 <MenuItem to={`/${item.object_slug}`} key={item.title}>
@@ -61,4 +63,4 @@ const MainMenu = () => (
 
 );
 
-export default MainMenu;
+export default SecondaryMenu;

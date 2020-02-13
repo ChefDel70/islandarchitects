@@ -31,7 +31,9 @@ exports.createPages = ({ graphql, actions }) => {
                 template
                 title
                 content
-                template
+                featured_media {
+                  source_url
+                }
               }
             }
           }
@@ -45,7 +47,41 @@ exports.createPages = ({ graphql, actions }) => {
         }
 
         // Create Page pages.
-        const pageTemplate = path.resolve("./src/templates/page.js")
+        // const pageTemplate = path.resolve("./src/templates/page.js")
+        // const homesAndPropertiesTemplate = path.resolve("./src/templates/homes_and_properties.js")
+        // const spacesAndDetailsTemplate = path.resolve("./src/templates/spaces_and_details.js")
+        // const designTeamTemplate = path.resolve("./src/templates/design_team.js")
+        // const onTheBoardsTemplate = path.resolve("./src/templates/on_the_boards.js")
+        //
+        // let functionWithCase = (template) => {
+        //     switch (template) {
+        //       case 'page.php':
+        //           return pageTemplate;
+        //           break;
+        //       case 'homes_and_properties.php':
+        //           return homesAndPropertiesTemplate;
+        //           break;
+        //       case 'spaces_and_details.php':
+        //           return spacesAndDetailsTemplate;
+        //           break;
+        //       case 'design_team.php':
+        //           return designTeamTemplate;
+        //           break;
+        //       case 'on_the_boards.php':
+        //           return onTheBoardsTemplate;
+        //           break;
+        //       default:
+        //           return pageTemplate;
+        //     }
+        //   };
+
+        let customTemplate = (template) => {
+          const absolutePath =
+            path.resolve(template.replace(/^(.+)\..+$/, "./src/templates/$1.js"))
+          return ( absolutePath == path.resolve() ) ?
+                  path.resolve("./src/templates/page.js") : absolutePath
+        }
+
         // We want to create a detailed page for each
         // page node. We'll just use the WordPress Slug for the slug.
         // The Page ID is prefixed with 'PAGE_'
@@ -54,32 +90,32 @@ exports.createPages = ({ graphql, actions }) => {
           // Plugins and sites can use functions like "createPage"
           // to interact with Gatsby.
 
+          const node = edge.node
+          const { slug, template } = node
+
+
           createPage({
-            // Each page is required to have a `path` as well
-            // as a template component. The `context` is
-            // optional but is often necessary so the template
-            // can query data specific to each page.
-            path: `/${edge.node.slug}/`,
-            component: slash(pageTemplate),
-            context: edge.node,
+            path: `/${slug}/`,
+            component: slash(customTemplate(template)),
+            context: node,
           })
         })
       })
       // ==== END PAGES ====
 
       // ==== POSTS (WORDPRESS NATIVE AND ACF) ====
+
+      // === POST GENERATION
       .then(() => {
         graphql(
           `
             {
-              allWordpressPost {
-                edges{
-                  node{
-                    id
-                    title
+              allWordpressWpHomeprops {
+                edges {
+                  node {
                     slug
-                    excerpt
-                    content
+                    status
+                    title
                   }
                 }
               }
@@ -90,14 +126,48 @@ exports.createPages = ({ graphql, actions }) => {
             console.log(result.errors)
             reject(result.errors)
           }
-          const postTemplate = path.resolve("./src/templates/post.js")
+          const homesAndPropertiesTemplate = path.resolve("./src/templates/properties.js")
           // We want to create a detailed page for each
           // post node. We'll just use the WordPress Slug for the slug.
           // The Post ID is prefixed with 'POST_'
-          _.each(result.data.allWordpressPost.edges, edge => {
+          _.each(result.data.allWordpressWpHomeprops.edges, edge => {
             createPage({
-              path: `/post/${edge.node.slug}/`,
-              component: slash(postTemplate),
+              path: `/homes-properties/${edge.node.slug}/`,
+              component: slash(homesAndPropertiesTemplate),
+              context: edge.node,
+            })
+          })
+        })
+      })
+
+      .then(() => {
+        graphql(
+          `
+            {
+              allWordpressWpSpacedetails {
+                edges {
+                  node {
+                    slug
+                    status
+                    title
+                  }
+                }
+              }
+            }
+          `
+        ).then(result => {
+          if (result.errors) {
+            console.log(result.errors)
+            reject(result.errors)
+          }
+          const spacesAndDetailsTemplate = path.resolve("./src/templates/spacedetails.js")
+          // We want to create a detailed page for each
+          // post node. We'll just use the WordPress Slug for the slug.
+          // The Post ID is prefixed with 'POST_'
+          _.each(result.data.allWordpressWpSpacedetails.edges, edge => {
+            createPage({
+              path: `/spaces-details/${edge.node.slug}/`,
+              component: slash(spacesAndDetailsTemplate),
               context: edge.node,
             })
           })
